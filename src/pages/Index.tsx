@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import WelcomeScreen from '@/components/questionnaire/WelcomeScreen';
 import ResponsibilitiesStep from '@/components/questionnaire/ResponsibilitiesStep';
 import TimeAllocationStep from '@/components/questionnaire/TimeAllocationStep';
@@ -108,12 +110,16 @@ const Index = () => {
   return (
     <>
       <head>
-        <title>מצפן פיתוח מנהלים | שאלון אבחון</title>
+        <title>מצפן ניהולי | שאלון אבחון</title>
         <meta name="description" content="שאלון אבחון לזיהוי אתגרים והתאמת מודולות למידה מבוססות דאטה עבור מנהלים ומנהלות" />
       </head>
-      <main className="min-h-screen">
-        {renderStep()}
-      </main>
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1">
+          {renderStep()}
+        </main>
+        <Footer />
+      </div>
     </>
   );
 };

@@ -19,7 +19,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
 
         {/* Title */}
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 text-foreground">
-          מצפן פיתוח מנהלים
+          מצפן ניהולי
         </h1>
         
         <p className="text-lg text-muted-foreground text-center mb-8">
