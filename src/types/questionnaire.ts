@@ -56,8 +56,8 @@ export interface TeamHealthData {
   commitment: string;
   accountability: string;
   results: string;
-  // Summary question - which one thing to improve
-  priorityArea: string;
+  // Gold question - open text
+  goldAction: string;
 }
 
 // Coaching data - 7 layers
@@ -167,7 +167,7 @@ export const initialTeamHealthData: TeamHealthData = {
   commitment: '',
   accountability: '',
   results: '',
-  priorityArea: '',
+  goldAction: '',
 };
 
 export const initialQuestionnaireData: QuestionnaireData = {
