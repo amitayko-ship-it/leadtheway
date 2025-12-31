@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ArrowLeft, Check } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Square, Star } from 'lucide-react';
 import ProgressBar from './ProgressBar';
-import { CardGameData } from '@/types/questionnaire';
+import { CardGameData, CardGameSelection } from '@/types/questionnaire';
 
 interface CardGameStepProps {
   cardGameData: CardGameData;
@@ -213,6 +213,8 @@ const bigStones: BigStone[] = [
   }
 ];
 
+type SelectionType = 'most' | 'least' | 'aspiration';
+
 const CardGameStep: React.FC<CardGameStepProps> = ({
   cardGameData,
   onCardGameDataChange,
@@ -220,54 +222,146 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
   onBack
 }) => {
   const [currentStone, setCurrentStone] = useState(0);
+  const [currentPhase, setCurrentPhase] = useState<'extremes' | 'aspiration'>('extremes');
   const totalStones = bigStones.length;
   const stone = bigStones[currentStone];
+  const selection = cardGameData[stone.id];
 
-  const updateSelection = (stoneId: keyof CardGameData, cardId: string) => {
-    const currentSelection = cardGameData[stoneId];
-    let newSelection: string[];
-
-    if (currentSelection.includes(cardId)) {
-      newSelection = currentSelection.filter(id => id !== cardId);
-    } else if (currentSelection.length < 3) {
-      newSelection = [...currentSelection, cardId];
+  const updateSelection = (type: SelectionType, cardId: string) => {
+    const currentSelection = { ...selection };
+    
+    // If clicking on the same card that's already selected, deselect it
+    if (currentSelection[type] === cardId) {
+      currentSelection[type] = '';
     } else {
-      return; // Already 3 selected
+      // Check if this card is already used in another selection
+      if (type === 'most' && currentSelection.least === cardId) {
+        return; // Can't select same card for both most and least
+      }
+      if (type === 'least' && currentSelection.most === cardId) {
+        return; // Can't select same card for both most and least
+      }
+      currentSelection[type] = cardId;
     }
 
     onCardGameDataChange({
       ...cardGameData,
-      [stoneId]: newSelection
+      [stone.id]: currentSelection
     });
   };
 
-  const canProceed = cardGameData[stone.id].length === 3;
+  const canProceedExtreme = selection.most !== '' && selection.least !== '';
+  const canProceedAspiration = selection.aspiration !== '';
+  const canProceed = currentPhase === 'extremes' ? canProceedExtreme : canProceedAspiration;
 
   const handleNext = () => {
-    if (currentStone < totalStones - 1) {
-      setCurrentStone(prev => prev + 1);
+    if (currentPhase === 'extremes') {
+      setCurrentPhase('aspiration');
     } else {
-      onNext();
+      if (currentStone < totalStones - 1) {
+        setCurrentStone(prev => prev + 1);
+        setCurrentPhase('extremes');
+      } else {
+        onNext();
+      }
     }
   };
 
   const handleBack = () => {
-    if (currentStone > 0) {
-      setCurrentStone(prev => prev - 1);
+    if (currentPhase === 'aspiration') {
+      setCurrentPhase('extremes');
     } else {
-      onBack();
+      if (currentStone > 0) {
+        setCurrentStone(prev => prev - 1);
+        setCurrentPhase('aspiration');
+      } else {
+        onBack();
+      }
     }
   };
 
+  const getCardStatus = (cardId: string): SelectionType | null => {
+    if (selection.most === cardId) return 'most';
+    if (selection.least === cardId) return 'least';
+    if (selection.aspiration === cardId) return 'aspiration';
+    return null;
+  };
+
+  const isCardDisabled = (cardId: string): boolean => {
+    if (currentPhase === 'extremes') {
+      // In extremes phase, can't select if it would conflict
+      return false; // We handle conflicts in updateSelection
+    } else {
+      // In aspiration phase, no restrictions
+      return false;
+    }
+  };
+
+  const getCardStyles = (cardId: string) => {
+    const status = getCardStatus(cardId);
+    
+    if (currentPhase === 'extremes') {
+      if (status === 'most') {
+        return 'border-red-500 bg-red-50 dark:bg-red-950/30 shadow-soft ring-2 ring-red-500/30';
+      }
+      if (status === 'least') {
+        return 'border-green-500 bg-green-50 dark:bg-green-950/30 shadow-soft ring-2 ring-green-500/30';
+      }
+    } else {
+      if (status === 'aspiration') {
+        return 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/30 shadow-soft ring-2 ring-yellow-500/30';
+      }
+      // Show previous selections dimmed
+      if (status === 'most' || status === 'least') {
+        return 'border-muted bg-muted/30 opacity-60';
+      }
+    }
+    
+    return 'border-border bg-background hover:border-primary/50 hover:bg-muted/50';
+  };
+
+  const renderCardBadge = (cardId: string) => {
+    const status = getCardStatus(cardId);
+    
+    if (status === 'most') {
+      return (
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500 text-white text-xs font-bold">
+          <Square className="w-3 h-3 fill-current" />
+          הכי הרבה
+        </div>
+      );
+    }
+    if (status === 'least') {
+      return (
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500 text-white text-xs font-bold">
+          <Square className="w-3 h-3 fill-current" />
+          הכי פחות
+        </div>
+      );
+    }
+    if (status === 'aspiration') {
+      return (
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-yellow-500 text-white text-xs font-bold">
+          <Star className="w-3 h-3 fill-current" />
+          שאיפה
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const totalProgress = currentStone * 2 + (currentPhase === 'aspiration' ? 1 : 0) + 1;
+  const totalPhases = totalStones * 2;
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <ProgressBar currentStep={currentStone + 1} totalSteps={totalStones} />
+      <ProgressBar currentStep={totalProgress} totalSteps={totalPhases} />
       
       <div className="text-center mb-8">
         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           🎴 משחק הקלפים
         </h2>
-        <p className="text-muted-foreground">תפיסת תפקיד ניהולית</p>
+        <p className="text-muted-foreground">תפיסת תפקיד ניהולית – Forced Choice</p>
       </div>
 
       <div className="bg-card rounded-2xl p-6 md:p-8 shadow-soft border border-border">
@@ -275,48 +369,102 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
           <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">
             {stone.title}
           </h3>
-          <p className="text-muted-foreground">{stone.subtitle}</p>
-          <div className="mt-3 inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
-            בחר 3 קלפים שמתארים אותך הכי טוב כיום ({cardGameData[stone.id].length}/3)
-          </div>
+          <p className="text-muted-foreground mb-4">{stone.subtitle}</p>
+          
+          {currentPhase === 'extremes' ? (
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">חשוב על החודש האחרון:</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <div className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  selection.most ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300' : 'bg-muted text-muted-foreground'
+                }`}>
+                  🟥 הכי הרבה: {selection.most ? '✓' : '?'}
+                </div>
+                <div className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  selection.least ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300' : 'bg-muted text-muted-foreground'
+                }`}>
+                  🟩 הכי פחות: {selection.least ? '✓' : '?'}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <p className="text-sm text-muted-foreground">איך היית רוצה להתנהל בעוד 3 חודשים?</p>
+              <div className={`inline-block px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                selection.aspiration ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300' : 'bg-muted text-muted-foreground'
+              }`}>
+                ⭐ שאיפה: {selection.aspiration ? '✓' : '?'}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="space-y-3">
           {stone.cards.map((card) => {
-            const isSelected = cardGameData[stone.id].includes(card.id);
-            const isDisabled = !isSelected && cardGameData[stone.id].length >= 3;
+            const status = getCardStatus(card.id);
+            const isDisabled = isCardDisabled(card.id);
+            const showDimmed = currentPhase === 'aspiration' && (status === 'most' || status === 'least');
 
             return (
               <button
                 key={card.id}
-                onClick={() => updateSelection(stone.id, card.id)}
+                onClick={() => {
+                  if (currentPhase === 'extremes') {
+                    // Toggle logic: if already selected, deselect; otherwise determine which to set
+                    if (status === 'most') {
+                      updateSelection('most', card.id); // Deselect
+                    } else if (status === 'least') {
+                      updateSelection('least', card.id); // Deselect
+                    } else if (!selection.most) {
+                      updateSelection('most', card.id);
+                    } else if (!selection.least) {
+                      updateSelection('least', card.id);
+                    }
+                  } else {
+                    updateSelection('aspiration', card.id);
+                  }
+                }}
                 disabled={isDisabled}
                 className={`
                   w-full p-4 rounded-xl transition-all duration-200 text-right
                   border-2 relative
-                  ${isSelected
-                    ? 'border-primary bg-accent shadow-soft'
-                    : isDisabled
-                      ? 'border-border bg-muted/30 opacity-50 cursor-not-allowed'
-                      : 'border-border bg-background hover:border-primary/50 hover:bg-muted/50'
-                  }
+                  ${getCardStyles(card.id)}
+                  ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}
                 `}
               >
+                {renderCardBadge(card.id)}
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">{card.emoji}</span>
                   <div className="flex-1">
-                    <h4 className="font-bold text-foreground mb-1">{card.title}</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{card.description}</p>
+                    <h4 className={`font-bold mb-1 ${showDimmed ? 'text-muted-foreground' : 'text-foreground'}`}>
+                      {card.title}
+                    </h4>
+                    <p className={`text-sm leading-relaxed ${showDimmed ? 'text-muted-foreground/70' : 'text-muted-foreground'}`}>
+                      {card.description}
+                    </p>
                   </div>
-                  {isSelected && (
-                    <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                      <Check className="w-4 h-4 text-primary-foreground" />
-                    </div>
-                  )}
                 </div>
               </button>
             );
           })}
+        </div>
+
+        {/* Instructions */}
+        <div className="mt-6 p-4 rounded-xl bg-muted/50 border border-border">
+          {currentPhase === 'extremes' ? (
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p>📌 <strong>הוראות:</strong></p>
+              <p>• לחץ על קלף ראשון לסימון "הכי הרבה" (🟥)</p>
+              <p>• לחץ על קלף שני לסימון "הכי פחות" (🟩)</p>
+              <p>• לא ניתן לבחור אותו קלף לשניהם</p>
+            </div>
+          ) : (
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p>📌 <strong>שאיפה:</strong></p>
+              <p>• בחר קלף אחד (⭐) שמתאר איך היית רוצה להתנהל בעוד 3 חודשים</p>
+              <p>• אפשר לבחור כל קלף, כולל אלה שסימנת קודם</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -335,7 +483,7 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
           disabled={!canProceed}
           className="flex items-center gap-2"
         >
-          {currentStone < totalStones - 1 ? 'הבא' : 'סיום'}
+          {currentPhase === 'extremes' ? 'לשלב השאיפה' : (currentStone < totalStones - 1 ? 'לאבן הבאה' : 'סיום')}
           <ArrowLeft className="w-4 h-4" />
         </Button>
       </div>
