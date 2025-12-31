@@ -253,31 +253,16 @@ const TeamHealthStep: React.FC<TeamHealthStepProps> = ({
 
         {/* Gold Question */}
         <div className="mt-6 p-4 rounded-xl bg-secondary/10 border border-secondary/30">
-          <label className="block text-foreground font-medium mb-4">
+          <label className="block text-foreground font-medium mb-3">
             ✨ שאלת הזהב: מה פעולה אחת שאם תעשה – תשפיע על הצוות לטובה?
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {priorityOptions.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => updateData({ priorityArea: option.id })}
-                className={`
-                  p-3 rounded-xl transition-all duration-200
-                  flex items-center gap-2 border-2
-                  ${data.priorityArea === option.id
-                    ? 'border-primary bg-accent shadow-soft'
-                    : 'border-border bg-background hover:border-primary/50 hover:bg-muted/50'
-                  }
-                `}
-              >
-                <span className="text-xl">{option.icon}</span>
-                <span className="text-sm font-medium text-foreground">{option.label}</span>
-                {data.priorityArea === option.id && (
-                  <Check className="w-4 h-4 text-primary mr-auto" />
-                )}
-              </button>
-            ))}
-          </div>
+          <textarea
+            value={data.goldAction || ''}
+            onChange={(e) => updateData({ goldAction: e.target.value })}
+            placeholder="תאר את הפעולה..."
+            className="w-full p-3 rounded-xl border-2 border-border bg-background text-foreground text-right resize-none focus:border-primary focus:outline-none transition-colors"
+            rows={3}
+          />
         </div>
       </div>
     );
