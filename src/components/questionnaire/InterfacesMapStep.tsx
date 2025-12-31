@@ -58,7 +58,7 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
 }) => {
   const journey = journeyProp || initialInterfaceJourneyData;
   const [currentStep, setCurrentStep] = useState(0);
-  const totalSteps = 10;
+  const totalSteps = 9;
 
   const updateJourney = (updates: Partial<InterfaceJourneyData>) => {
     onInterfaceJourneyChange({ ...journey, ...updates });
@@ -73,9 +73,8 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 4: return true; // Initiative score has default
       case 5: return journey.actionNature !== '';
       case 6: return true; // Change score has default
-      case 7: return journey.influenceMoment !== '';
-      case 8: return journey.futureLeverage !== '';
-      case 9: return true; // Price score has default
+      case 7: return journey.futureLeverage !== '';
+      case 8: return true; // Price score has default
       default: return true;
     }
   };
@@ -309,37 +308,13 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
         return (
           <div className="space-y-6">
             <label className="block text-foreground font-medium mb-4">
-              אם תסתכל אחורה על המקרה הזה – האם היה רגע אחד שבו פעולה שלך כן השפיעה, אפילו במעט?
-            </label>
-            {renderChoiceButtons(influenceMomentOptions, journey.influenceMoment, (id) => updateJourney({ influenceMoment: id }))}
-            
-            {(journey.influenceMoment === 'yes' || journey.influenceMoment === 'maybe') && (
-              <div className="mt-4">
-                <label className="block text-foreground font-medium mb-2">
-                  מה עשית שם?
-                </label>
-                <Input
-                  value={journey.influenceMomentText}
-                  onChange={(e) => updateJourney({ influenceMomentText: e.target.value })}
-                  placeholder="תאר בקצרה..."
-                  className="text-right"
-                />
-              </div>
-            )}
-          </div>
-        );
-
-      case 8:
-        return (
-          <div className="space-y-6">
-            <label className="block text-foreground font-medium mb-4">
               אם אותו מקרה היה חוזר מחר – מה דבר אחד שאתה יכול לעשות אחרת, שנמצא בשליטתך?
             </label>
             {renderChoiceButtons(futureLeverageOptions, journey.futureLeverage, (id) => updateJourney({ futureLeverage: id }))}
           </div>
         );
 
-      case 9:
+      case 8:
         return (
           <div className="space-y-6">
             <div className="mb-6">
