@@ -251,10 +251,10 @@ const TeamHealthStep: React.FC<TeamHealthStepProps> = ({
           </div>
         )}
 
-        {/* Priority Question */}
-        <div className="mt-6">
+        {/* Gold Question */}
+        <div className="mt-6 p-4 rounded-xl bg-secondary/10 border border-secondary/30">
           <label className="block text-foreground font-medium mb-4">
-            אם היית צריך לבחור דבר אחד, שאם ישתפר בצוות שלך – כל השאר יושפע לטובה, מה הוא?
+            ✨ שאלת הזהב: מה פעולה אחת שאם תעשה – תשפיע על הצוות לטובה?
           </label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {priorityOptions.map((option) => (
