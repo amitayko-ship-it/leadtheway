@@ -13,6 +13,34 @@ export interface ModulePriority {
   readiness: number;
 }
 
+// Coaching data - 7 layers
+export interface CoachingData {
+  // Layer 1: Self-perception - managerial identity (1-5)
+  identityScore: number;
+  
+  // Layer 2: Actual behavior - time investment
+  timeInvestment: string;
+  
+  // Layer 3: Coaching quality - dominant style
+  coachingStyle: string;
+  
+  // Layer 4: Effectiveness - behavioral outcome (1-5)
+  effectivenessScore: number;
+  
+  // Layer 5: Duplication test - recurring issues (1-5)
+  recurrenceScore: number;
+  
+  // Layer 6: Internal control - blocker
+  internalBlocker: string;
+  
+  // Layer 7: Personal price - impact score and type
+  personalPriceScore: number;
+  personalPriceType: string;
+  
+  // Gold question - one small thing
+  oneSmallThing: string;
+}
+
 // All questionnaire data
 export interface QuestionnaireData {
   // Screen 1: Focus & Control
@@ -37,10 +65,8 @@ export interface QuestionnaireData {
   // Screen 4: Interfaces Map
   interfaces: InterfaceEntry[];
   
-  // Screen 5: Coaching & Development
-  growthProof: string;
-  autonomyPrice: number;
-  coachingBlocker: string;
+  // Screen 5: Coaching & Development (7 Layers)
+  coaching: CoachingData;
   
   // Screen 6: Team Health
   teamHealth: string;
@@ -58,6 +84,18 @@ export interface QuestionnaireData {
     managerialFocus: ModulePriority;
   };
 }
+
+export const initialCoachingData: CoachingData = {
+  identityScore: 3,
+  timeInvestment: '',
+  coachingStyle: '',
+  effectivenessScore: 3,
+  recurrenceScore: 3,
+  internalBlocker: '',
+  personalPriceScore: 3,
+  personalPriceType: '',
+  oneSmallThing: '',
+};
 
 export const initialQuestionnaireData: QuestionnaireData = {
   // Screen 1
@@ -83,9 +121,7 @@ export const initialQuestionnaireData: QuestionnaireData = {
   interfaces: [],
   
   // Screen 5
-  growthProof: '',
-  autonomyPrice: 3,
-  coachingBlocker: '',
+  coaching: initialCoachingData,
   
   // Screen 6
   teamHealth: '',
@@ -127,4 +163,26 @@ export const getTopModule = (data: QuestionnaireData): string => {
   
   const topModule = Object.entries(scores).reduce((a, b) => a[1] > b[1] ? a : b)[0];
   return moduleNames[topModule];
+};
+
+// Generate coaching insight based on data
+export const getCoachingInsight = (coaching: CoachingData): string => {
+  const highIdentity = coaching.identityScore >= 4;
+  const lowTime = ['less30', 'unknown'].includes(coaching.timeInvestment);
+  const lowEffectiveness = coaching.effectivenessScore <= 2;
+  const highRecurrence = coaching.recurrenceScore >= 4;
+  
+  if (highIdentity && lowTime) {
+    return 'אתה רואה חניכה כחלק חשוב מהתפקיד, אך בפועל היא כמעט לא מקבלת זמן ביומן.';
+  }
+  
+  if (!lowTime && lowEffectiveness) {
+    return 'אתה משקיע מאמץ בחניכה, אך זה עדיין לא מתורגם לעצמאות גבוהה יותר של העובדים.';
+  }
+  
+  if (highRecurrence) {
+    return 'נראה שאתה מוצא את עצמך מטפל שוב ושוב באותם נושאים - ייתכן שצריך לשנות את אופן החניכה.';
+  }
+  
+  return 'יש לך בסיס טוב בחניכה - המשך לחפש דרכים להעמיק את ההשפעה.';
 };
