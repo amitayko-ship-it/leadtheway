@@ -48,6 +48,18 @@ export interface ModulePriority {
   readiness: number;
 }
 
+// Team Health - Lencioni 5 Dysfunctions
+export interface TeamHealthData {
+  // 5 layers - each with 'a', 'b', or 'c'
+  trust: string;
+  conflict: string;
+  commitment: string;
+  accountability: string;
+  results: string;
+  // Summary question - which one thing to improve
+  priorityArea: string;
+}
+
 // Coaching data - 7 layers
 export interface CoachingData {
   // Layer 1: Self-perception - managerial identity (1-5)
@@ -104,8 +116,9 @@ export interface QuestionnaireData {
   // Screen 5: Coaching & Development (7 Layers)
   coaching: CoachingData;
   
-  // Screen 6: Team Health
-  teamHealth: string;
+  // Screen 6: Team Health (Lencioni)
+  teamHealthData: TeamHealthData;
+  teamHealth: string; // Legacy
   
   // Screen 7: Engagement & Energy
   energyLevel: number;
@@ -148,6 +161,15 @@ export const initialInterfaceJourneyData: InterfaceJourneyData = {
   priceTypes: [],
 };
 
+export const initialTeamHealthData: TeamHealthData = {
+  trust: '',
+  conflict: '',
+  commitment: '',
+  accountability: '',
+  results: '',
+  priorityArea: '',
+};
+
 export const initialQuestionnaireData: QuestionnaireData = {
   // Screen 1
   anchorScore: 3,
@@ -176,6 +198,7 @@ export const initialQuestionnaireData: QuestionnaireData = {
   coaching: initialCoachingData,
   
   // Screen 6
+  teamHealthData: initialTeamHealthData,
   teamHealth: '',
   
   // Screen 7

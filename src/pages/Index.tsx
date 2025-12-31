@@ -11,7 +11,7 @@ import TeamHealthStep from '@/components/questionnaire/TeamHealthStep';
 import EngagementStep from '@/components/questionnaire/EngagementStep';
 import ModulePrioritizationStep from '@/components/questionnaire/ModulePrioritizationStep';
 import CompletionScreen from '@/components/questionnaire/CompletionScreen';
-import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData } from '@/types/questionnaire';
+import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData, TeamHealthData } from '@/types/questionnaire';
 
 type Step = 
   | 'welcome' 
@@ -106,8 +106,8 @@ const Index = () => {
       case 'teamHealth':
         return (
           <TeamHealthStep
-            teamHealth={data.teamHealth}
-            onTeamHealthChange={(val) => updateData({ teamHealth: val })}
+            teamHealthData={data.teamHealthData}
+            onTeamHealthDataChange={(teamHealthData: TeamHealthData) => updateData({ teamHealthData })}
             onNext={() => setCurrentStep('engagement')}
             onBack={() => setCurrentStep('coaching')}
           />
