@@ -11,7 +11,7 @@ import TeamHealthStep from '@/components/questionnaire/TeamHealthStep';
 import EngagementStep from '@/components/questionnaire/EngagementStep';
 import ModulePrioritizationStep from '@/components/questionnaire/ModulePrioritizationStep';
 import CompletionScreen from '@/components/questionnaire/CompletionScreen';
-import { QuestionnaireData, initialQuestionnaireData, InterfaceEntry, CoachingData } from '@/types/questionnaire';
+import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData } from '@/types/questionnaire';
 
 type Step = 
   | 'welcome' 
@@ -86,8 +86,8 @@ const Index = () => {
       case 'interfacesMap':
         return (
           <InterfacesMapStep
-            interfaces={data.interfaces}
-            onInterfacesChange={(interfaces: InterfaceEntry[]) => updateData({ interfaces })}
+            interfaceJourney={data.interfaceJourney}
+            onInterfaceJourneyChange={(interfaceJourney: InterfaceJourneyData) => updateData({ interfaceJourney })}
             onNext={() => setCurrentStep('coaching')}
             onBack={() => setCurrentStep('decisionsPrice')}
           />

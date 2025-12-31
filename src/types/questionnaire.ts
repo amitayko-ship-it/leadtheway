@@ -1,4 +1,39 @@
-// Interface for a single interface/stakeholder mapping
+// Interface journey data - 9 steps
+export interface InterfaceJourneyData {
+  // Step 0: General perception (anchor)
+  generalInfluence: number;
+  
+  // Step 1: Choose specific case
+  interfaceRole: string;
+  
+  // Step 2: Perception of influence in situation
+  situationInfluence: number;
+  
+  // Step 3: Main reason for friction
+  frictionReason: string;
+  
+  // Step 4: Initiative
+  initiativeScore: number;
+  
+  // Step 5: Nature of action
+  actionNature: string;
+  
+  // Step 6: Change in practice
+  changeScore: number;
+  
+  // Step 7: Moment of influence
+  influenceMoment: string;
+  influenceMomentText: string;
+  
+  // Step 8: Future leverage
+  futureLeverage: string;
+  
+  // Step 9: Managerial price
+  priceScore: number;
+  priceTypes: string[];
+}
+
+// Legacy interface entry (keeping for backwards compatibility)
 export interface InterfaceEntry {
   id: string;
   name: string;
@@ -62,8 +97,9 @@ export interface QuestionnaireData {
   longTermPrice: string;
   retrospective: string;
   
-  // Screen 4: Interfaces Map
-  interfaces: InterfaceEntry[];
+  // Screen 4: Interfaces Journey
+  interfaceJourney: InterfaceJourneyData;
+  interfaces: InterfaceEntry[]; // Legacy
   
   // Screen 5: Coaching & Development (7 Layers)
   coaching: CoachingData;
@@ -97,6 +133,21 @@ export const initialCoachingData: CoachingData = {
   oneSmallThing: '',
 };
 
+export const initialInterfaceJourneyData: InterfaceJourneyData = {
+  generalInfluence: 3,
+  interfaceRole: '',
+  situationInfluence: 3,
+  frictionReason: '',
+  initiativeScore: 3,
+  actionNature: '',
+  changeScore: 3,
+  influenceMoment: '',
+  influenceMomentText: '',
+  futureLeverage: '',
+  priceScore: 3,
+  priceTypes: [],
+};
+
 export const initialQuestionnaireData: QuestionnaireData = {
   // Screen 1
   anchorScore: 3,
@@ -118,6 +169,7 @@ export const initialQuestionnaireData: QuestionnaireData = {
   retrospective: '',
   
   // Screen 4
+  interfaceJourney: initialInterfaceJourneyData,
   interfaces: [],
   
   // Screen 5
