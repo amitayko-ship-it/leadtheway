@@ -13,84 +13,91 @@ interface TeamHealthStepProps {
 
 type LayerKey = 'trust' | 'conflict' | 'commitment' | 'accountability' | 'results';
 
+interface LayerOption {
+  id: string;
+  label: string;
+}
+
 interface LayerConfig {
   key: LayerKey;
   title: string;
   subtitle: string;
   icon: string;
   question: string;
-  options: { id: string; label: string; level: 'a' | 'b' | 'c' }[];
+  options: LayerOption[];
 }
 
 const layers: LayerConfig[] = [
   {
     key: 'trust',
     title: 'אמון',
-    subtitle: 'Absence of Trust',
+    subtitle: 'דרך תגובה לכשל',
     icon: '🤝',
-    question: 'איזה היגד הכי מתאר את הצוות שלך?',
+    question: 'כשקורה כשל מקצועי בצוות, מה קורה בדרך כלל קודם?',
     options: [
-      { id: 'a', label: 'אנשים בצוות מרגישים בנוח להודות בטעות או בחוסר ידע, וגם לבקש עזרה.', level: 'a' },
-      { id: 'b', label: 'יש פתיחות מסוימת, אבל אנשים עדיין שומרים על עצמם ולא תמיד חושפים חולשות.', level: 'b' },
-      { id: 'c', label: 'רוב האנשים נמנעים מלהודות בטעות או לבקש עזרה כדי לא להיתפס כחלשים.', level: 'c' },
+      { id: 'a', label: 'מנסים להבין מהר מה קרה ואיך מתקנים' },
+      { id: 'b', label: 'מחפשים מי אחראי כדי למנוע חזרה על זה' },
+      { id: 'c', label: 'מגנים קודם על הצוות כלפי חוץ, ורק אחר כך בודקים פנימה' },
+      { id: 'd', label: 'הנושא מטופל בעיקר בשיחות אחד־על־אחד' },
+      { id: 'e', label: 'מעדיפים לא לפתוח את זה אם זה לא קריטי' },
     ],
   },
   {
     key: 'conflict',
     title: 'קונפליקט',
-    subtitle: 'Fear of Conflict',
+    subtitle: 'דרך ישיבות',
     icon: '⚔️',
-    question: 'כשעולות מחלוקות מקצועיות בצוות:',
+    question: 'בדיונים מקצועיים עם דעות שונות, מה הכי מאפיין את הישיבות?',
     options: [
-      { id: 'a', label: 'מתקיים דיון פתוח וישיר, גם אם הוא לא נוח.', level: 'a' },
-      { id: 'b', label: 'מדברים על חלק מהדברים, אבל נושאים רגישים נשארים מתחת לפני השטח.', level: 'b' },
-      { id: 'c', label: 'שומרים על שקט תעשייתי, ומחלוקות צצות בשיחות צד או לא בכלל.', level: 'c' },
+      { id: 'a', label: 'יש ויכוח פתוח וישיר, גם אם זה לא נעים' },
+      { id: 'b', label: 'חלק מדברים בחדר, חלק בשיחות מסדרון' },
+      { id: 'c', label: 'נזהרים לא להיכנס לנושאים רגישים' },
+      { id: 'd', label: 'ההחלטות מתקבלות בעיקר מחוץ לישיבה' },
+      { id: 'e', label: 'אני נדרש "לסגור" כדי להתקדם' },
     ],
   },
   {
     key: 'commitment',
     title: 'מחויבות',
-    subtitle: 'Lack of Commitment',
+    subtitle: 'דרך סיום דיון',
     icon: '🎯',
-    question: 'בסיום דיונים וישיבות צוות:',
+    question: 'אחרי ישיבות צוות משמעותיות, מה קורה בפועל?',
     options: [
-      { id: 'a', label: 'ברור לכולם מה הוחלט, מי אחראי ומה הצעד הבא.', level: 'a' },
-      { id: 'b', label: 'יש כיוון כללי, אבל לא תמיד בהירות מלאה לגבי החלטות ובעלות.', level: 'b' },
-      { id: 'c', label: 'יוצאים מישיבות עם תחושת בלבול או "נמשיך לדבר על זה".', level: 'c' },
+      { id: 'a', label: 'ברור מה הוחלט ומי עושה מה' },
+      { id: 'b', label: 'ברור הכיוון, פחות ברור הביצוע' },
+      { id: 'c', label: 'חוזרים לנושא שוב בישיבה הבאה' },
+      { id: 'd', label: 'אנשים מפרשים אחרת את אותה החלטה' },
+      { id: 'e', label: 'אין באמת החלטה, רק המשך דיון' },
     ],
   },
   {
     key: 'accountability',
     title: 'אחריותיות',
-    subtitle: 'Avoidance of Accountability',
+    subtitle: 'דרך סטנדרטים',
     icon: '📋',
-    question: 'כשמישהו בצוות לא עומד בהתחייבות או בסטנדרט:',
+    question: 'כשמישהו בצוות לא עומד בהתחייבות, מה קורה לרוב?',
     options: [
-      { id: 'a', label: 'חברי הצוות מעירים אחד לשני באופן ישיר וענייני.', level: 'a' },
-      { id: 'b', label: 'לרוב מצפים שהמנהל יטפל בזה.', level: 'b' },
-      { id: 'c', label: 'מעדיפים לא להעיר כדי לא לפגוע, גם אם זה יוצר תסכול.', level: 'c' },
+      { id: 'a', label: 'חברי צוות מעירים אחד לשני ישירות' },
+      { id: 'b', label: 'מצפים שאני אתערב' },
+      { id: 'c', label: 'זה עובר מתחת לרדאר' },
+      { id: 'd', label: 'מדברים על זה רק בדיעבד' },
+      { id: 'e', label: 'הסטנדרטים לא מספיק ברורים מלכתחילה' },
     ],
   },
   {
     key: 'results',
     title: 'תוצאות',
-    subtitle: 'Inattention to Results',
+    subtitle: 'דרך מדדי הצלחה',
     icon: '🏆',
-    question: 'ביחס לביצועים והצלחות:',
+    question: 'מה באמת מגדיר "הצלחה" בצוות ביום־יום?',
     options: [
-      { id: 'a', label: 'הצלחת הצוות חשובה יותר מהצלחה אישית או מחלקתית.', level: 'a' },
-      { id: 'b', label: 'יש שילוב בין מיקוד צוותי לאינטרסים אישיים.', level: 'b' },
-      { id: 'c', label: 'כל אחד מתמקד בעיקר במה שטוב לו או ליחידה שלו.', level: 'c' },
+      { id: 'a', label: 'עמידה ביעדי הצוות כיחידה' },
+      { id: 'b', label: 'עמידה ביעדי כל אחד בתחומו' },
+      { id: 'c', label: 'הצלחה מול הלקוחות' },
+      { id: 'd', label: 'שקט תעשייתי והימנעות מבעיות' },
+      { id: 'e', label: 'הישגים אישיים / מחלקתיים' },
     ],
   },
-];
-
-const priorityOptions = [
-  { id: 'trust', label: 'אמון', icon: '🤝' },
-  { id: 'conflict', label: 'קונפליקט', icon: '⚔️' },
-  { id: 'commitment', label: 'מחויבות', icon: '🎯' },
-  { id: 'accountability', label: 'אחריותיות', icon: '📋' },
-  { id: 'results', label: 'תוצאות', icon: '🏆' },
 ];
 
 const TeamHealthStep: React.FC<TeamHealthStepProps> = ({
@@ -131,37 +138,21 @@ const TeamHealthStep: React.FC<TeamHealthStepProps> = ({
     }
   };
 
-  // Find the bottleneck - lowest layer with 'c', then 'b'
-  const getBottleneck = (): { layer: LayerConfig; level: string } | null => {
+  // Identify dominant dysfunction pattern
+  const getDominantPattern = (): { layer: LayerConfig; answer: string } | null => {
     for (const layer of layers) {
-      if (data[layer.key] === 'c') {
-        return { layer, level: 'c' };
-      }
-    }
-    for (const layer of layers) {
-      if (data[layer.key] === 'b') {
-        return { layer, level: 'b' };
+      if (data[layer.key]) {
+        return { layer, answer: data[layer.key] };
       }
     }
     return null;
   };
 
-  const getLevelLabel = (level: string): string => {
-    switch (level) {
-      case 'a': return 'חזק';
-      case 'b': return 'חלקי';
-      case 'c': return 'חסר';
-      default: return '';
-    }
-  };
-
-  const getLevelColor = (level: string): string => {
-    switch (level) {
-      case 'a': return 'text-green-500';
-      case 'b': return 'text-yellow-500';
-      case 'c': return 'text-red-500';
-      default: return 'text-muted-foreground';
-    }
+  const getAnswerLabel = (layerKey: LayerKey, answerId: string): string => {
+    const layer = layers.find(l => l.key === layerKey);
+    if (!layer) return '';
+    const option = layer.options.find(o => o.id === answerId);
+    return option?.label || '';
   };
 
   const renderLayerStep = (layer: LayerConfig) => (
@@ -172,6 +163,12 @@ const TeamHealthStep: React.FC<TeamHealthStepProps> = ({
           <h3 className="text-lg font-semibold text-foreground">{layer.title}</h3>
           <p className="text-sm text-muted-foreground">{layer.subtitle}</p>
         </div>
+      </div>
+
+      <div className="p-3 rounded-lg bg-muted/50 border border-border">
+        <p className="text-xs text-muted-foreground">
+          💡 חשוב על החודש האחרון. ענה לפי מה שקורה בפועל, לא לפי איך שהיית רוצה שזה ייראה.
+        </p>
       </div>
       
       <label className="block text-foreground font-medium mb-4">
@@ -208,44 +205,45 @@ const TeamHealthStep: React.FC<TeamHealthStepProps> = ({
   );
 
   const renderSummaryStep = () => {
-    const bottleneck = getBottleneck();
     const allAnswered = layers.every(l => data[l.key] !== '');
+    const dominantPattern = getDominantPattern();
     
     return (
       <div className="space-y-6">
         <div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">סיכום</h3>
-          <p className="text-sm text-muted-foreground">תמונת המצב של הצוות</p>
+          <h3 className="text-lg font-semibold text-foreground mb-2">סיכום דינמיקה צוותית</h3>
+          <p className="text-sm text-muted-foreground">תמונת המצב של הצוות – אבחון עקיף</p>
         </div>
 
         {/* Results Summary */}
         {allAnswered && (
           <div className="p-4 rounded-xl bg-muted/50 border border-border mb-4">
-            <div className="grid gap-2">
+            <div className="grid gap-3">
               {layers.map((layer) => (
-                <div key={layer.key} className="flex items-center justify-between">
+                <div key={layer.key} className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
                     <span>{layer.icon}</span>
-                    <span className="text-foreground">{layer.title}</span>
+                    <span className="text-foreground font-medium">{layer.title}</span>
                   </div>
-                  <span className={`font-bold ${getLevelColor(data[layer.key])}`}>
-                    {getLevelLabel(data[layer.key])}
-                  </span>
+                  <p className="text-sm text-muted-foreground mr-7">
+                    {getAnswerLabel(layer.key, data[layer.key])}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* Bottleneck Alert */}
-        {bottleneck && (
+        {/* Pattern Insight */}
+        {dominantPattern && (
           <div className="p-4 rounded-xl bg-secondary/10 border border-secondary/30 flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-secondary flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-foreground font-medium mb-1">צוואר הבקבוק</p>
+              <p className="text-foreground font-medium mb-1">דפוס מרכזי</p>
               <p className="text-sm text-muted-foreground">
-                לפי מודל לנציוני, <span className="font-bold">{bottleneck.layer.title}</span> הוא התחום שדורש את תשומת הלב הראשונה.
-                לא עובדים על שכבה גבוהה לפני שהתחתונה יציבה.
+                הדפוס המרכזי שעולה בצוות שלך כרגע הוא סביב <span className="font-bold">{dominantPattern.layer.title}</span>.
+                <br />
+                זה כנראה משפיע על השכבות שמעליו בפירמידה.
               </p>
             </div>
           </div>
@@ -284,10 +282,10 @@ const TeamHealthStep: React.FC<TeamHealthStepProps> = ({
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-2xl font-bold text-foreground">
-                פיתוח צוות
+                דינמיקה צוותית
               </h2>
               <p className="text-muted-foreground">
-                מודל 5 הדיספונקציות של לנציוני
+                אבחון עקיף (Lencioni-based)
               </p>
             </div>
             <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">

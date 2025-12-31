@@ -1,18 +1,30 @@
-// Card Game data - 5 big stones
-export interface CardGameData {
-  focusPrioritization: string[];
-  timeRoutines: string[];
-  coachingDelegation: string[];
-  influenceLeadership: string[];
-  teamLearning: string[];
+// Card Game data - 5 big stones with forced choice
+export interface CardGameSelection {
+  most: string;      // 🟥 הכי הרבה
+  least: string;     // 🟩 הכי פחות
+  aspiration: string; // ⭐ שאיפה
 }
 
+export interface CardGameData {
+  focusPrioritization: CardGameSelection;
+  timeRoutines: CardGameSelection;
+  coachingDelegation: CardGameSelection;
+  influenceLeadership: CardGameSelection;
+  teamLearning: CardGameSelection;
+}
+
+export const initialCardGameSelection: CardGameSelection = {
+  most: '',
+  least: '',
+  aspiration: '',
+};
+
 export const initialCardGameData: CardGameData = {
-  focusPrioritization: [],
-  timeRoutines: [],
-  coachingDelegation: [],
-  influenceLeadership: [],
-  teamLearning: [],
+  focusPrioritization: { ...initialCardGameSelection },
+  timeRoutines: { ...initialCardGameSelection },
+  coachingDelegation: { ...initialCardGameSelection },
+  influenceLeadership: { ...initialCardGameSelection },
+  teamLearning: { ...initialCardGameSelection },
 };
 
 // Interface journey data - 9 steps
@@ -65,9 +77,9 @@ export interface ModulePriority {
   readiness: number;
 }
 
-// Team Health - Lencioni 5 Dysfunctions
+// Team Health - Lencioni 5 Dysfunctions (indirect behavioral questions)
 export interface TeamHealthData {
-  // 5 layers - each with 'a', 'b', or 'c'
+  // 5 layers - each with 'a', 'b', 'c', 'd', or 'e'
   trust: string;
   conflict: string;
   commitment: string;
