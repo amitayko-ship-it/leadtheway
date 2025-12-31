@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Check, ChevronLeft, ChevronRight, AlertCircle } from 'lucide-react';
 import ProgressBar from './ProgressBar';
-import { CoachingData, getCoachingInsight } from '@/types/questionnaire';
+import { CoachingData, getCoachingInsight, initialCoachingData } from '@/types/questionnaire';
 
 interface CoachingStepProps {
-  coaching: CoachingData;
+  coaching?: CoachingData;
   onCoachingChange: (coaching: CoachingData) => void;
   onNext: () => void;
   onBack: () => void;
@@ -44,11 +44,12 @@ const priceTypeOptions = [
 ];
 
 const CoachingStep: React.FC<CoachingStepProps> = ({
-  coaching,
+  coaching: coachingProp,
   onCoachingChange,
   onNext,
   onBack,
 }) => {
+  const coaching = coachingProp || initialCoachingData;
   const [currentLayer, setCurrentLayer] = useState(1);
   const totalLayers = 7;
 
