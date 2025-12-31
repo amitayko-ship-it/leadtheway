@@ -1,8 +1,7 @@
 // Card Game data - 5 big stones with forced choice
 export interface CardGameSelection {
-  most: string;      // 🟥 הכי הרבה
-  least: string;     // 🟩 הכי פחות
-  aspiration: string; // ⭐ שאיפה
+  most: string;      // 🟩 הכי הרבה
+  least: string;     // 🟥 הכי פחות
 }
 
 export interface CardGameData {
@@ -16,7 +15,6 @@ export interface CardGameData {
 export const initialCardGameSelection: CardGameSelection = {
   most: '',
   least: '',
-  aspiration: '',
 };
 
 export const initialCardGameData: CardGameData = {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ArrowLeft, Square, Star } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Square } from 'lucide-react';
 import ProgressBar from './ProgressBar';
 import { CardGameData, CardGameSelection } from '@/types/questionnaire';
 
@@ -213,7 +213,7 @@ const bigStones: BigStone[] = [
   }
 ];
 
-type SelectionType = 'most' | 'least' | 'aspiration';
+type SelectionType = 'most' | 'least';
 
 const CardGameStep: React.FC<CardGameStepProps> = ({
   cardGameData,
@@ -222,7 +222,6 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
   onBack
 }) => {
   const [currentStone, setCurrentStone] = useState(0);
-  const [currentPhase, setCurrentPhase] = useState<'extremes' | 'aspiration'>('extremes');
   const totalStones = bigStones.length;
   const stone = bigStones[currentStone];
   const selection = cardGameData[stone.id];
@@ -250,71 +249,38 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
     });
   };
 
-  const canProceedExtreme = selection.most !== '' && selection.least !== '';
-  const canProceedAspiration = selection.aspiration !== '';
-  const canProceed = currentPhase === 'extremes' ? canProceedExtreme : canProceedAspiration;
+  const canProceed = selection.most !== '' && selection.least !== '';
 
   const handleNext = () => {
-    if (currentPhase === 'extremes') {
-      setCurrentPhase('aspiration');
+    if (currentStone < totalStones - 1) {
+      setCurrentStone(prev => prev + 1);
     } else {
-      if (currentStone < totalStones - 1) {
-        setCurrentStone(prev => prev + 1);
-        setCurrentPhase('extremes');
-      } else {
-        onNext();
-      }
+      onNext();
     }
   };
 
   const handleBack = () => {
-    if (currentPhase === 'aspiration') {
-      setCurrentPhase('extremes');
+    if (currentStone > 0) {
+      setCurrentStone(prev => prev - 1);
     } else {
-      if (currentStone > 0) {
-        setCurrentStone(prev => prev - 1);
-        setCurrentPhase('aspiration');
-      } else {
-        onBack();
-      }
+      onBack();
     }
   };
 
   const getCardStatus = (cardId: string): SelectionType | null => {
     if (selection.most === cardId) return 'most';
     if (selection.least === cardId) return 'least';
-    if (selection.aspiration === cardId) return 'aspiration';
     return null;
-  };
-
-  const isCardDisabled = (cardId: string): boolean => {
-    if (currentPhase === 'extremes') {
-      // In extremes phase, can't select if it would conflict
-      return false; // We handle conflicts in updateSelection
-    } else {
-      // In aspiration phase, no restrictions
-      return false;
-    }
   };
 
   const getCardStyles = (cardId: string) => {
     const status = getCardStatus(cardId);
     
-    if (currentPhase === 'extremes') {
-      if (status === 'most') {
-        return 'border-red-500 bg-red-50 dark:bg-red-950/30 shadow-soft ring-2 ring-red-500/30';
-      }
-      if (status === 'least') {
-        return 'border-green-500 bg-green-50 dark:bg-green-950/30 shadow-soft ring-2 ring-green-500/30';
-      }
-    } else {
-      if (status === 'aspiration') {
-        return 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950/30 shadow-soft ring-2 ring-yellow-500/30';
-      }
-      // Show previous selections dimmed
-      if (status === 'most' || status === 'least') {
-        return 'border-muted bg-muted/30 opacity-60';
-      }
+    if (status === 'most') {
+      return 'border-green-500 bg-green-50 dark:bg-green-950/30 shadow-soft ring-2 ring-green-500/30';
+    }
+    if (status === 'least') {
+      return 'border-red-500 bg-red-50 dark:bg-red-950/30 shadow-soft ring-2 ring-red-500/30';
     }
     
     return 'border-border bg-background hover:border-primary/50 hover:bg-muted/50';
@@ -325,7 +291,7 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
     
     if (status === 'most') {
       return (
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500 text-white text-xs font-bold">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500 text-white text-xs font-bold">
           <Square className="w-3 h-3 fill-current" />
           הכי הרבה
         </div>
@@ -333,29 +299,18 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
     }
     if (status === 'least') {
       return (
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500 text-white text-xs font-bold">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500 text-white text-xs font-bold">
           <Square className="w-3 h-3 fill-current" />
           הכי פחות
-        </div>
-      );
-    }
-    if (status === 'aspiration') {
-      return (
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-yellow-500 text-white text-xs font-bold">
-          <Star className="w-3 h-3 fill-current" />
-          שאיפה
         </div>
       );
     }
     return null;
   };
 
-  const totalProgress = currentStone * 2 + (currentPhase === 'aspiration' ? 1 : 0) + 1;
-  const totalPhases = totalStones * 2;
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <ProgressBar currentStep={totalProgress} totalSteps={totalPhases} />
+      <ProgressBar currentStep={currentStone + 1} totalSteps={totalStones} />
       
       <div className="text-center mb-8">
         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
@@ -371,75 +326,56 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
           </h3>
           <p className="text-muted-foreground mb-4">{stone.subtitle}</p>
           
-          {currentPhase === 'extremes' ? (
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">חשוב על החודש האחרון:</p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <div className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  selection.most ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300' : 'bg-muted text-muted-foreground'
-                }`}>
-                  🟥 הכי הרבה: {selection.most ? '✓' : '?'}
-                </div>
-                <div className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  selection.least ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300' : 'bg-muted text-muted-foreground'
-                }`}>
-                  🟩 הכי פחות: {selection.least ? '✓' : '?'}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">איך היית רוצה להתנהל בעוד 3 חודשים?</p>
-              <div className={`inline-block px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selection.aspiration ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-300' : 'bg-muted text-muted-foreground'
+          <div className="space-y-2">
+            <p className="text-sm text-muted-foreground">חשוב על החודש האחרון:</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <div className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                selection.most ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300' : 'bg-muted text-muted-foreground'
               }`}>
-                ⭐ שאיפה: {selection.aspiration ? '✓' : '?'}
+                🟩 הכי הרבה: {selection.most ? '✓' : '?'}
+              </div>
+              <div className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                selection.least ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300' : 'bg-muted text-muted-foreground'
+              }`}>
+                🟥 הכי פחות: {selection.least ? '✓' : '?'}
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         <div className="space-y-3">
           {stone.cards.map((card) => {
             const status = getCardStatus(card.id);
-            const isDisabled = isCardDisabled(card.id);
-            const showDimmed = currentPhase === 'aspiration' && (status === 'most' || status === 'least');
 
             return (
               <button
                 key={card.id}
                 onClick={() => {
-                  if (currentPhase === 'extremes') {
-                    // Toggle logic: if already selected, deselect; otherwise determine which to set
-                    if (status === 'most') {
-                      updateSelection('most', card.id); // Deselect
-                    } else if (status === 'least') {
-                      updateSelection('least', card.id); // Deselect
-                    } else if (!selection.most) {
-                      updateSelection('most', card.id);
-                    } else if (!selection.least) {
-                      updateSelection('least', card.id);
-                    }
-                  } else {
-                    updateSelection('aspiration', card.id);
+                  // Toggle logic: if already selected, deselect; otherwise determine which to set
+                  if (status === 'most') {
+                    updateSelection('most', card.id); // Deselect
+                  } else if (status === 'least') {
+                    updateSelection('least', card.id); // Deselect
+                  } else if (!selection.most) {
+                    updateSelection('most', card.id);
+                  } else if (!selection.least) {
+                    updateSelection('least', card.id);
                   }
                 }}
-                disabled={isDisabled}
                 className={`
                   w-full p-4 rounded-xl transition-all duration-200 text-right
-                  border-2 relative
+                  border-2 relative cursor-pointer
                   ${getCardStyles(card.id)}
-                  ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}
                 `}
               >
                 {renderCardBadge(card.id)}
                 <div className="flex items-start gap-3">
                   <span className="text-2xl">{card.emoji}</span>
                   <div className="flex-1">
-                    <h4 className={`font-bold mb-1 ${showDimmed ? 'text-muted-foreground' : 'text-foreground'}`}>
+                    <h4 className="font-bold mb-1 text-foreground">
                       {card.title}
                     </h4>
-                    <p className={`text-sm leading-relaxed ${showDimmed ? 'text-muted-foreground/70' : 'text-muted-foreground'}`}>
+                    <p className="text-sm leading-relaxed text-muted-foreground">
                       {card.description}
                     </p>
                   </div>
@@ -451,20 +387,12 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
 
         {/* Instructions */}
         <div className="mt-6 p-4 rounded-xl bg-muted/50 border border-border">
-          {currentPhase === 'extremes' ? (
-            <div className="text-sm text-muted-foreground space-y-1">
-              <p>📌 <strong>הוראות:</strong></p>
-              <p>• לחץ על קלף ראשון לסימון "הכי הרבה" (🟥)</p>
-              <p>• לחץ על קלף שני לסימון "הכי פחות" (🟩)</p>
-              <p>• לא ניתן לבחור אותו קלף לשניהם</p>
-            </div>
-          ) : (
-            <div className="text-sm text-muted-foreground space-y-1">
-              <p>📌 <strong>שאיפה:</strong></p>
-              <p>• בחר קלף אחד (⭐) שמתאר איך היית רוצה להתנהל בעוד 3 חודשים</p>
-              <p>• אפשר לבחור כל קלף, כולל אלה שסימנת קודם</p>
-            </div>
-          )}
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p>📌 <strong>הוראות:</strong></p>
+            <p>• לחץ על קלף ראשון לסימון "הכי הרבה" (🟩)</p>
+            <p>• לחץ על קלף שני לסימון "הכי פחות" (🟥)</p>
+            <p>• לא ניתן לבחור אותו קלף לשניהם</p>
+          </div>
         </div>
       </div>
 
@@ -483,7 +411,7 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
           disabled={!canProceed}
           className="flex items-center gap-2"
         >
-          {currentPhase === 'extremes' ? 'לשלב השאיפה' : (currentStone < totalStones - 1 ? 'לאבן הבאה' : 'סיום')}
+          {currentStone < totalStones - 1 ? 'לאבן הבאה' : 'סיום'}
           <ArrowLeft className="w-4 h-4" />
         </Button>
       </div>
