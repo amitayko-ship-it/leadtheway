@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Compass, Clock, Target, Sparkles } from 'lucide-react';
+import { Compass, Clock } from 'lucide-react';
 
 interface WelcomeScreenProps {
   onStart: () => void;
@@ -19,41 +19,24 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
 
         {/* Title */}
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 text-foreground">
-          מצפן ניהולי
+          מצפן הניהול
         </h1>
         
         <p className="text-lg text-muted-foreground text-center mb-8">
-          זיהוי אתגרים והתאמת מודולות למידה מבוססות דאטה
+          אבחון ממוקד למנהלים
         </p>
 
         {/* Info Card */}
         <div className="bg-card rounded-2xl p-6 shadow-medium mb-8 border border-border">
-          <p className="text-foreground leading-relaxed text-center">
-            מנהל/ת יקר/ה, השאלון הזה נוצר כדי להפסיק לנחש מה יעזור לך להצליח. 
-            ב-4 דקות הקרובות נמפה את האתגרים היומיומיים שלך, כדי שנוכל לבנות עבורך 
-            תהליך פיתוח ממוקד, פרקטי ורלוונטי באמת.
+          <p className="text-foreground leading-relaxed text-center text-lg">
+            זהו כלי אבחוני לצמיחה, לא להערכה.
           </p>
-          <div className="mt-4 p-4 bg-accent/50 rounded-xl">
-            <p className="text-sm font-semibold text-accent-foreground text-center">
-              <Sparkles className="w-4 h-4 inline ml-2" />
-              אין תשובות נכונות - רק את המציאות שלך בשטח.
-            </p>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="text-center p-4">
-            <Clock className="w-8 h-8 mx-auto mb-2 text-primary" />
-            <p className="text-sm text-muted-foreground">4 דקות</p>
-          </div>
-          <div className="text-center p-4">
-            <Target className="w-8 h-8 mx-auto mb-2 text-secondary" />
-            <p className="text-sm text-muted-foreground">5 שלבים</p>
-          </div>
-          <div className="text-center p-4">
-            <Sparkles className="w-8 h-8 mx-auto mb-2 text-primary" />
-            <p className="text-sm text-muted-foreground">תובנות מיידיות</p>
+          <p className="text-muted-foreground leading-relaxed text-center mt-4">
+            המטרה: לזהות איפה נתקע האימפקט הניהולי ואיפה מהלך ממוקד יכול לעשות קפיצה אמיתית.
+          </p>
+          <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Clock className="w-4 h-4" />
+            <span>10-12 דקות</span>
           </div>
         </div>
 
@@ -65,7 +48,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
             onClick={onStart}
             className="min-w-[200px]"
           >
-            בואו נתחיל
+            התחלה
           </Button>
         </div>
       </div>
