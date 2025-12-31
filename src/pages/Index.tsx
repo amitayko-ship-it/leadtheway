@@ -8,7 +8,7 @@ import DecisionsPriceStep from '@/components/questionnaire/DecisionsPriceStep';
 import InterfacesMapStep from '@/components/questionnaire/InterfacesMapStep';
 import CoachingStep from '@/components/questionnaire/CoachingStep';
 import TeamHealthStep from '@/components/questionnaire/TeamHealthStep';
-import EngagementStep from '@/components/questionnaire/EngagementStep';
+
 
 import CompletionScreen from '@/components/questionnaire/CompletionScreen';
 import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData, TeamHealthData } from '@/types/questionnaire';
@@ -21,7 +21,6 @@ type Step =
   | 'interfacesMap' 
   | 'coaching' 
   | 'teamHealth' 
-  | 'engagement' 
   | 'completion';
 
 const Index = () => {
@@ -107,22 +106,8 @@ const Index = () => {
           <TeamHealthStep
             teamHealthData={data.teamHealthData}
             onTeamHealthDataChange={(teamHealthData: TeamHealthData) => updateData({ teamHealthData })}
-            onNext={() => setCurrentStep('engagement')}
-            onBack={() => setCurrentStep('coaching')}
-          />
-        );
-      
-      case 'engagement':
-        return (
-          <EngagementStep
-            energyLevel={data.energyLevel}
-            meaningScore={data.meaningScore}
-            pressurePattern={data.pressurePattern}
-            onEnergyLevelChange={(score) => updateData({ energyLevel: score })}
-            onMeaningScoreChange={(score) => updateData({ meaningScore: score })}
-            onPressurePatternChange={(val) => updateData({ pressurePattern: val })}
             onNext={() => setCurrentStep('completion')}
-            onBack={() => setCurrentStep('teamHealth')}
+            onBack={() => setCurrentStep('coaching')}
           />
         );
       
