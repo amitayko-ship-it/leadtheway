@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WelcomeScreen from '@/components/questionnaire/WelcomeScreen';
+import CardGameStep from '@/components/questionnaire/CardGameStep';
 import FocusControlStep from '@/components/questionnaire/FocusControlStep';
 import TimeEnergyStep from '@/components/questionnaire/TimeEnergyStep';
 import DecisionsPriceStep from '@/components/questionnaire/DecisionsPriceStep';
@@ -9,12 +10,12 @@ import InterfacesMapStep from '@/components/questionnaire/InterfacesMapStep';
 import CoachingStep from '@/components/questionnaire/CoachingStep';
 import TeamHealthStep from '@/components/questionnaire/TeamHealthStep';
 
-
 import CompletionScreen from '@/components/questionnaire/CompletionScreen';
-import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData, TeamHealthData } from '@/types/questionnaire';
+import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData, TeamHealthData, CardGameData } from '@/types/questionnaire';
 
 type Step = 
   | 'welcome' 
+  | 'cardGame'
   | 'focusControl' 
   | 'timeEnergy' 
   | 'decisionsPrice' 
@@ -39,7 +40,17 @@ const Index = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 'welcome':
-        return <WelcomeScreen onStart={() => setCurrentStep('focusControl')} />;
+        return <WelcomeScreen onStart={() => setCurrentStep('cardGame')} />;
+      
+      case 'cardGame':
+        return (
+          <CardGameStep
+            cardGameData={data.cardGameData}
+            onCardGameDataChange={(cardGameData: CardGameData) => updateData({ cardGameData })}
+            onNext={() => setCurrentStep('focusControl')}
+            onBack={() => setCurrentStep('welcome')}
+          />
+        );
       
       case 'focusControl':
         return (
@@ -51,7 +62,7 @@ const Index = () => {
             onTimeDrainChange={(drain) => updateData({ timeDrain: drain })}
             onTimeDrainOtherChange={(text) => updateData({ timeDrainOther: text })}
             onNext={() => setCurrentStep('timeEnergy')}
-            onBack={() => setCurrentStep('welcome')}
+            onBack={() => setCurrentStep('cardGame')}
           />
         );
       
