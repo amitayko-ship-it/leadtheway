@@ -1,3 +1,20 @@
+// Card Game data - 5 big stones
+export interface CardGameData {
+  focusPrioritization: string[];
+  timeRoutines: string[];
+  coachingDelegation: string[];
+  influenceLeadership: string[];
+  teamLearning: string[];
+}
+
+export const initialCardGameData: CardGameData = {
+  focusPrioritization: [],
+  timeRoutines: [],
+  coachingDelegation: [],
+  influenceLeadership: [],
+  teamLearning: [],
+};
+
 // Interface journey data - 9 steps
 export interface InterfaceJourneyData {
   // Step 0: General perception (anchor)
@@ -90,6 +107,9 @@ export interface CoachingData {
 
 // All questionnaire data
 export interface QuestionnaireData {
+  // Screen 0: Card Game
+  cardGameData: CardGameData;
+  
   // Screen 1: Focus & Control
   anchorScore: number;
   timeDrain: string;
@@ -171,6 +191,9 @@ export const initialTeamHealthData: TeamHealthData = {
 };
 
 export const initialQuestionnaireData: QuestionnaireData = {
+  // Screen 0
+  cardGameData: initialCardGameData,
+  
   // Screen 1
   anchorScore: 3,
   timeDrain: '',
