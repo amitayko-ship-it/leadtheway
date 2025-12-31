@@ -194,10 +194,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 0:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 0: תפיסה כללית</h3>
-              <p className="text-sm text-muted-foreground mb-4">עוגן</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               באופן כללי, עד כמה אתה מאמין שיש לך יכולת אמיתית להשפיע על איכות העבודה בממשקים המרכזיים שלך?
             </label>
@@ -213,10 +209,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 1:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 1: בחירת מקרה אמיתי</h3>
-              <p className="text-sm text-muted-foreground mb-4">ירידה לקרקע</p>
-            </div>
             <div className="p-4 rounded-xl bg-accent/30 border border-primary/20 mb-4">
               <p className="text-foreground">
                 עכשיו בחר ממשק אחד ספציפי מהחודש האחרון
@@ -240,10 +232,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 2:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 2: תפיסת שליטה במקרה</h3>
-              <p className="text-sm text-muted-foreground mb-4">פער תפיסתי</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               במקרה הספציפי הזה, עד כמה הרגשת שיש לך יכולת להשפיע על איך הדברים מתנהלים?
             </label>
@@ -267,10 +255,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 3:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 3: ייחוס הקושי</h3>
-              <p className="text-sm text-muted-foreground mb-4">איפה שמתי את הבעיה</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               כשאתה חושב על המקרה הזה, מה בעיניך הסיבה המרכזית לכך שהוא תקוע?
             </label>
@@ -281,10 +265,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 4:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 4: מבחן ההתנהגות</h3>
-              <p className="text-sm text-muted-foreground mb-4">יוזמה בפועל</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               במקרה הזה, עד כמה יזמת אתה פעולה מכוונת כדי לשפר את הממשק?
               <span className="block text-sm text-muted-foreground mt-1">
@@ -303,10 +283,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 5:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 5: איכות ההתערבות</h3>
-              <p className="text-sm text-muted-foreground mb-4">אופי הפעולה</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               אם התקיימה שיחה או ניסיון טיפול – מה הכי קרוב למה שקרה בפועל?
             </label>
@@ -317,10 +293,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 6:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 6: מבחן התוצאה</h3>
-              <p className="text-sm text-muted-foreground mb-4">שינוי בפועל</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               אחרי מה שקרה (או לא קרה), עד כמה משהו בהתנהלות הממשק השתנה בפועל?
             </label>
@@ -336,10 +308,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 7:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 7: רגע מראה</h3>
-              <p className="text-sm text-muted-foreground mb-4">ערעור תפיסת חוסר השליטה</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               אם תסתכל אחורה על המקרה הזה – האם היה רגע אחד שבו פעולה שלך כן השפיעה, אפילו במעט?
             </label>
@@ -364,10 +332,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 8:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 8: החזרת שליטה</h3>
-              <p className="text-sm text-muted-foreground mb-4">מנוף השפעה עתידי</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               אם אותו מקרה היה חוזר מחר – מה דבר אחד שאתה יכול לעשות אחרת, שנמצא בשליטתך?
             </label>
@@ -378,11 +342,6 @@ const InterfacesMapStep: React.FC<InterfacesMapStepProps> = ({
       case 9:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שלב 9: המחיר הניהולי</h3>
-              <p className="text-sm text-muted-foreground mb-4">מה זה עלה לך</p>
-            </div>
-            
             <div className="mb-6">
               <label className="block text-foreground font-medium mb-4">
                 עד כמה המקרה הזה גבה ממך מחיר ניהולי?

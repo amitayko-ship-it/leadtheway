@@ -9,7 +9,7 @@ import InterfacesMapStep from '@/components/questionnaire/InterfacesMapStep';
 import CoachingStep from '@/components/questionnaire/CoachingStep';
 import TeamHealthStep from '@/components/questionnaire/TeamHealthStep';
 import EngagementStep from '@/components/questionnaire/EngagementStep';
-import ModulePrioritizationStep from '@/components/questionnaire/ModulePrioritizationStep';
+
 import CompletionScreen from '@/components/questionnaire/CompletionScreen';
 import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData, TeamHealthData } from '@/types/questionnaire';
 
@@ -22,7 +22,6 @@ type Step =
   | 'coaching' 
   | 'teamHealth' 
   | 'engagement' 
-  | 'modulePrioritization' 
   | 'completion';
 
 const Index = () => {
@@ -122,18 +121,8 @@ const Index = () => {
             onEnergyLevelChange={(score) => updateData({ energyLevel: score })}
             onMeaningScoreChange={(score) => updateData({ meaningScore: score })}
             onPressurePatternChange={(val) => updateData({ pressurePattern: val })}
-            onNext={() => setCurrentStep('modulePrioritization')}
-            onBack={() => setCurrentStep('teamHealth')}
-          />
-        );
-      
-      case 'modulePrioritization':
-        return (
-          <ModulePrioritizationStep
-            modulePriorities={data.modulePriorities}
-            onModulePrioritiesChange={(priorities) => updateData({ modulePriorities: priorities })}
             onNext={() => setCurrentStep('completion')}
-            onBack={() => setCurrentStep('engagement')}
+            onBack={() => setCurrentStep('teamHealth')}
           />
         );
       
