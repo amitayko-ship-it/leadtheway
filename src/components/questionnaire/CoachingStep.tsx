@@ -158,10 +158,6 @@ const CoachingStep: React.FC<CoachingStepProps> = ({
       case 1:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שכבה 1: תפיסה עצמית</h3>
-              <p className="text-sm text-muted-foreground mb-4">זהות ניהולית</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               עד כמה חניכה ופיתוח אנשים הם חלק מרכזי מהזהות הניהולית שלך, ולא "עוד משהו שחשוב אבל נדחק"?
             </label>
@@ -177,10 +173,6 @@ const CoachingStep: React.FC<CoachingStepProps> = ({
       case 2:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שכבה 2: התנהגות בפועל</h3>
-              <p className="text-sm text-muted-foreground mb-4">מבחן המציאות</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               בשבוע עבודה ממוצע, כמה זמן בפועל אתה מקדיש לחניכה מכוונת (שיחות פיתוח, ליווי, משוב עומק – לא ניהול שוטף)?
             </label>
@@ -197,12 +189,8 @@ const CoachingStep: React.FC<CoachingStepProps> = ({
                 <p className="text-sm text-foreground">
                   דירגת חניכה כחשובה מאוד, אך בפועל אתה משקיע בה פחות משעה בשבוע.
                 </p>
-              </div>
-            )}
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שכבה 3: איכות החניכה</h3>
-              <p className="text-sm text-muted-foreground mb-4">לא רק כמה, אלא איך</p>
             </div>
+            )}
             <label className="block text-foreground font-medium mb-4">
               כשאתה חונך עובד, מה אתה עושה בדרך כלל?
             </label>
@@ -213,10 +201,6 @@ const CoachingStep: React.FC<CoachingStepProps> = ({
       case 4:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שכבה 4: אפקטיביות</h3>
-              <p className="text-sm text-muted-foreground mb-4">הוכחת תוצאה התנהגותית</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               תחשוב על עובד אחד שאתה חונך. עד כמה בעקבות העבודה שלך הוא היום:
               <span className="block text-sm text-muted-foreground mt-2">
@@ -235,10 +219,6 @@ const CoachingStep: React.FC<CoachingStepProps> = ({
       case 5:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שכבה 5: מבחן הכפילות</h3>
-              <p className="text-sm text-muted-foreground mb-4">פער תפיסה–מציאות</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               עד כמה אתה מוצא את עצמך "מטפל שוב ושוב" באותם נושאים אצל אותם עובדים?
             </label>
@@ -254,10 +234,6 @@ const CoachingStep: React.FC<CoachingStepProps> = ({
       case 6:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שכבה 6: שליטה פנימית</h3>
-              <p className="text-sm text-muted-foreground mb-4">מה באמת בידיים שלי</p>
-            </div>
             <label className="block text-foreground font-medium mb-4">
               מה הכי מחזיק אותך מלעשות חניכה אפקטיבית יותר?
             </label>
@@ -268,11 +244,6 @@ const CoachingStep: React.FC<CoachingStepProps> = ({
       case 7:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-2">שכבה 7: המחיר האישי</h3>
-              <p className="text-sm text-muted-foreground mb-4">למה זה אמור לעניין אותי</p>
-            </div>
-            
             <div className="mb-6">
               <label className="block text-foreground font-medium mb-4">
                 באיזו מידה חוסר עצמאות של הצוות גובה ממך היום מחיר אישי?
