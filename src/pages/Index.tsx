@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WelcomeScreen from '@/components/questionnaire/WelcomeScreen';
@@ -14,6 +14,9 @@ import ModuleSelectionScreen from '@/components/questionnaire/ModuleSelectionScr
 import ManagementCompassDashboard from '@/components/questionnaire/ManagementCompassDashboard';
 import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData, TeamHealthData, CardGameData } from '@/types/questionnaire';
 
+const STORAGE_KEY = 'management-compass-data';
+const STEP_STORAGE_KEY = 'management-compass-step';
+
 type Step = 
   | 'welcome' 
   | 'cardGame'
@@ -27,9 +30,32 @@ type Step =
   | 'moduleSelection'
   | 'dashboard';
 
+const loadFromStorage = (): { data: QuestionnaireData; step: Step } => {
+  try {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    const savedStep = localStorage.getItem(STEP_STORAGE_KEY) as Step | null;
+    return {
+      data: savedData ? JSON.parse(savedData) : initialQuestionnaireData,
+      step: savedStep || 'welcome'
+    };
+  } catch {
+    return { data: initialQuestionnaireData, step: 'welcome' };
+  }
+};
+
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState<Step>('welcome');
-  const [data, setData] = useState<QuestionnaireData>(initialQuestionnaireData);
+  const [currentStep, setCurrentStep] = useState<Step>(() => loadFromStorage().step);
+  const [data, setData] = useState<QuestionnaireData>(() => loadFromStorage().data);
+
+  // Save data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }, [data]);
+
+  // Save step to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(STEP_STORAGE_KEY, currentStep);
+  }, [currentStep]);
 
   const updateData = (updates: Partial<QuestionnaireData>) => {
     setData(prev => ({ ...prev, ...updates }));
@@ -38,6 +64,8 @@ const Index = () => {
   const handleRestart = () => {
     setData(initialQuestionnaireData);
     setCurrentStep('welcome');
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STEP_STORAGE_KEY);
   };
 
   const renderStep = () => {
