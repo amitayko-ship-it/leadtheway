@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, DragEvent } from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, ArrowLeft, Square } from 'lucide-react';
+import { ArrowRight, ArrowLeft, GripVertical } from 'lucide-react';
 import ProgressBar from './ProgressBar';
-import { CardGameData, CardGameSelection } from '@/types/questionnaire';
+import { CardGameData } from '@/types/questionnaire';
 
 interface CardGameStepProps {
   cardGameData: CardGameData;
@@ -213,7 +213,7 @@ const bigStones: BigStone[] = [
   }
 ];
 
-type SelectionType = 'most' | 'least';
+type DropZone = 'most' | 'least';
 
 const CardGameStep: React.FC<CardGameStepProps> = ({
   cardGameData,
@@ -222,31 +222,77 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
   onBack
 }) => {
   const [currentStone, setCurrentStone] = useState(0);
+  const [draggedCard, setDraggedCard] = useState<string | null>(null);
+  const [activeDropZone, setActiveDropZone] = useState<DropZone | null>(null);
+  
   const totalStones = bigStones.length;
   const stone = bigStones[currentStone];
   const selection = cardGameData[stone.id];
 
-  const updateSelection = (type: SelectionType, cardId: string) => {
-    const currentSelection = { ...selection };
+  const handleDragStart = (e: DragEvent<HTMLDivElement>, cardId: string) => {
+    setDraggedCard(cardId);
+    e.dataTransfer.setData('cardId', cardId);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragEnd = () => {
+    setDraggedCard(null);
+    setActiveDropZone(null);
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>, zone: DropZone) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setActiveDropZone(zone);
+  };
+
+  const handleDragLeave = () => {
+    setActiveDropZone(null);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>, zone: DropZone) => {
+    e.preventDefault();
+    const cardId = e.dataTransfer.getData('cardId');
     
-    // If clicking on the same card that's already selected, deselect it
-    if (currentSelection[type] === cardId) {
-      currentSelection[type] = '';
-    } else {
-      // Check if this card is already used in another selection
-      if (type === 'most' && currentSelection.least === cardId) {
-        return; // Can't select same card for both most and least
-      }
-      if (type === 'least' && currentSelection.most === cardId) {
-        return; // Can't select same card for both most and least
-      }
-      currentSelection[type] = cardId;
+    if (!cardId) return;
+
+    const newSelection = { ...selection };
+    
+    // Remove from other zone if exists
+    if (zone === 'most' && newSelection.least === cardId) {
+      newSelection.least = '';
+    } else if (zone === 'least' && newSelection.most === cardId) {
+      newSelection.most = '';
     }
+    
+    // Set to new zone
+    newSelection[zone] = cardId;
 
     onCardGameDataChange({
       ...cardGameData,
-      [stone.id]: currentSelection
+      [stone.id]: newSelection
     });
+
+    setDraggedCard(null);
+    setActiveDropZone(null);
+  };
+
+  const removeFromZone = (zone: DropZone) => {
+    onCardGameDataChange({
+      ...cardGameData,
+      [stone.id]: {
+        ...selection,
+        [zone]: ''
+      }
+    });
+  };
+
+  const getCardById = (cardId: string): CardOption | undefined => {
+    return stone.cards.find(c => c.id === cardId);
+  };
+
+  const isCardInDropZone = (cardId: string): boolean => {
+    return selection.most === cardId || selection.least === cardId;
   };
 
   const canProceed = selection.most !== '' && selection.least !== '';
@@ -267,46 +313,96 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
     }
   };
 
-  const getCardStatus = (cardId: string): SelectionType | null => {
-    if (selection.most === cardId) return 'most';
-    if (selection.least === cardId) return 'least';
-    return null;
+  const renderDraggableCard = (card: CardOption, inDropZone: boolean = false, zone?: DropZone) => {
+    const isBeingDragged = draggedCard === card.id;
+    
+    return (
+      <div
+        key={card.id}
+        draggable
+        onDragStart={(e) => handleDragStart(e, card.id)}
+        onDragEnd={handleDragEnd}
+        className={`
+          p-4 rounded-xl transition-all duration-200 text-right
+          border-2 cursor-grab active:cursor-grabbing select-none
+          ${isBeingDragged ? 'opacity-50 scale-95' : 'opacity-100'}
+          ${inDropZone 
+            ? zone === 'most' 
+              ? 'border-green-500 bg-green-50 dark:bg-green-950/30' 
+              : 'border-red-500 bg-red-50 dark:bg-red-950/30'
+            : 'border-border bg-card hover:border-primary/50 hover:bg-muted/50 hover:shadow-md'
+          }
+        `}
+      >
+        <div className="flex items-start gap-3">
+          <GripVertical className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-1" />
+          <span className="text-2xl flex-shrink-0">{card.emoji}</span>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-bold mb-1 text-foreground">
+              {card.title}
+            </h4>
+            {!inDropZone && (
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {card.description}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
-  const getCardStyles = (cardId: string) => {
-    const status = getCardStatus(cardId);
+  const renderDropZone = (zone: DropZone) => {
+    const isActive = activeDropZone === zone;
+    const selectedCardId = selection[zone];
+    const selectedCard = selectedCardId ? getCardById(selectedCardId) : null;
+    const isMost = zone === 'most';
     
-    if (status === 'most') {
-      return 'border-green-500 bg-green-50 dark:bg-green-950/30 shadow-soft ring-2 ring-green-500/30';
-    }
-    if (status === 'least') {
-      return 'border-red-500 bg-red-50 dark:bg-red-950/30 shadow-soft ring-2 ring-red-500/30';
-    }
-    
-    return 'border-border bg-background hover:border-primary/50 hover:bg-muted/50';
+    return (
+      <div
+        onDragOver={(e) => handleDragOver(e, zone)}
+        onDragLeave={handleDragLeave}
+        onDrop={(e) => handleDrop(e, zone)}
+        className={`
+          min-h-[120px] rounded-xl border-2 border-dashed p-4 transition-all duration-300
+          ${isActive 
+            ? isMost 
+              ? 'border-green-500 bg-green-100/50 dark:bg-green-900/30 shadow-[0_0_20px_rgba(34,197,94,0.3)]' 
+              : 'border-red-500 bg-red-100/50 dark:bg-red-900/30 shadow-[0_0_20px_rgba(239,68,68,0.3)]'
+            : selectedCard
+              ? isMost
+                ? 'border-green-500 bg-green-50 dark:bg-green-950/20'
+                : 'border-red-500 bg-red-50 dark:bg-red-950/20'
+              : 'border-muted-foreground/30 bg-muted/30'
+          }
+        `}
+      >
+        <div className="flex items-center justify-between mb-2">
+          <span className={`text-sm font-bold ${isMost ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+            {isMost ? '🟩 מתאר אותי הכי הרבה' : '🟥 מתאר אותי הכי פחות'}
+          </span>
+          {selectedCard && (
+            <button
+              onClick={() => removeFromZone(zone)}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              הסר ↩
+            </button>
+          )}
+        </div>
+        
+        {selectedCard ? (
+          renderDraggableCard(selectedCard, true, zone)
+        ) : (
+          <div className="flex items-center justify-center h-20 text-muted-foreground text-sm">
+            {isActive ? '🎯 שחרר כאן' : 'גרור קלף לכאן'}
+          </div>
+        )}
+      </div>
+    );
   };
 
-  const renderCardBadge = (cardId: string) => {
-    const status = getCardStatus(cardId);
-    
-    if (status === 'most') {
-      return (
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500 text-white text-xs font-bold">
-          <Square className="w-3 h-3 fill-current" />
-          הכי הרבה
-        </div>
-      );
-    }
-    if (status === 'least') {
-      return (
-        <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500 text-white text-xs font-bold">
-          <Square className="w-3 h-3 fill-current" />
-          הכי פחות
-        </div>
-      );
-    }
-    return null;
-  };
+  const availableCards = stone.cards.filter(card => !isCardInDropZone(card.id));
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -325,74 +421,30 @@ const CardGameStep: React.FC<CardGameStepProps> = ({
             {stone.title}
           </h3>
           <p className="text-muted-foreground mb-4">{stone.subtitle}</p>
-          
-          <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">חשוב על החודש האחרון:</p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <div className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selection.most ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300' : 'bg-muted text-muted-foreground'
-              }`}>
-                🟩 הכי הרבה: {selection.most ? '✓' : '?'}
-              </div>
-              <div className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selection.least ? 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300' : 'bg-muted text-muted-foreground'
-              }`}>
-                🟥 הכי פחות: {selection.least ? '✓' : '?'}
-              </div>
-            </div>
-          </div>
         </div>
 
-        <div className="space-y-3">
-          {stone.cards.map((card) => {
-            const status = getCardStatus(card.id);
-
-            return (
-              <button
-                key={card.id}
-                onClick={() => {
-                  // Toggle logic: if already selected, deselect; otherwise determine which to set
-                  if (status === 'most') {
-                    updateSelection('most', card.id); // Deselect
-                  } else if (status === 'least') {
-                    updateSelection('least', card.id); // Deselect
-                  } else if (!selection.most) {
-                    updateSelection('most', card.id);
-                  } else if (!selection.least) {
-                    updateSelection('least', card.id);
-                  }
-                }}
-                className={`
-                  w-full p-4 rounded-xl transition-all duration-200 text-right
-                  border-2 relative cursor-pointer
-                  ${getCardStyles(card.id)}
-                `}
-              >
-                {renderCardBadge(card.id)}
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl">{card.emoji}</span>
-                  <div className="flex-1">
-                    <h4 className="font-bold mb-1 text-foreground">
-                      {card.title}
-                    </h4>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {card.description}
-                    </p>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+        {/* Micro-copy instructions */}
+        <div className="text-center mb-6 p-3 rounded-lg bg-muted/50 border border-border">
+          <p className="text-sm text-muted-foreground">
+            גרור קלף אחד לכל תיבה.<br />
+            חשוב על דפוסים שחזרו על עצמם ברוב החודש האחרון – לא על מקרה חריג.
+          </p>
         </div>
 
-        {/* Instructions */}
-        <div className="mt-6 p-4 rounded-xl bg-muted/50 border border-border">
-          <div className="text-sm text-muted-foreground space-y-1">
-            <p>📌 <strong>הוראות:</strong></p>
-            <p>• לחץ על קלף ראשון לסימון "הכי הרבה" (🟩)</p>
-            <p>• לחץ על קלף שני לסימון "הכי פחות" (🟥)</p>
-            <p>• לא ניתן לבחור אותו קלף לשניהם</p>
-          </div>
+        {/* Available cards */}
+        <div className="space-y-3 mb-6">
+          {availableCards.map((card) => renderDraggableCard(card))}
+        </div>
+
+        {/* Drop zones */}
+        <div className="grid md:grid-cols-2 gap-4 mt-6">
+          {renderDropZone('most')}
+          {renderDropZone('least')}
+        </div>
+
+        {/* Status indicator */}
+        <div className="mt-4 text-center text-sm text-muted-foreground">
+          בחרת {(selection.most ? 1 : 0) + (selection.least ? 1 : 0)}/2
         </div>
       </div>
 
