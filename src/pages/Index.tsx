@@ -3,6 +3,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import WelcomeScreen from '@/components/questionnaire/WelcomeScreen';
 import CardGameStep from '@/components/questionnaire/CardGameStep';
+import CardGameSummaryScreen from '@/components/questionnaire/CardGameSummaryScreen';
 import FocusControlStep from '@/components/questionnaire/FocusControlStep';
 import TimeEnergyStep from '@/components/questionnaire/TimeEnergyStep';
 import DecisionsPriceStep from '@/components/questionnaire/DecisionsPriceStep';
@@ -10,12 +11,13 @@ import InterfacesMapStep from '@/components/questionnaire/InterfacesMapStep';
 import CoachingStep from '@/components/questionnaire/CoachingStep';
 import TeamHealthStep from '@/components/questionnaire/TeamHealthStep';
 import ModuleSelectionScreen from '@/components/questionnaire/ModuleSelectionScreen';
-import CompletionScreen from '@/components/questionnaire/CompletionScreen';
+import ManagementCompassDashboard from '@/components/questionnaire/ManagementCompassDashboard';
 import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData, TeamHealthData, CardGameData } from '@/types/questionnaire';
 
 type Step = 
   | 'welcome' 
   | 'cardGame'
+  | 'cardGameSummary'
   | 'focusControl' 
   | 'timeEnergy' 
   | 'decisionsPrice' 
@@ -23,7 +25,7 @@ type Step =
   | 'coaching' 
   | 'teamHealth' 
   | 'moduleSelection'
-  | 'completion';
+  | 'dashboard';
 
 const Index = () => {
   const [currentStep, setCurrentStep] = useState<Step>('welcome');
@@ -48,8 +50,16 @@ const Index = () => {
           <CardGameStep
             cardGameData={data.cardGameData}
             onCardGameDataChange={(cardGameData: CardGameData) => updateData({ cardGameData })}
-            onNext={() => setCurrentStep('focusControl')}
+            onNext={() => setCurrentStep('cardGameSummary')}
             onBack={() => setCurrentStep('welcome')}
+          />
+        );
+      
+      case 'cardGameSummary':
+        return (
+          <CardGameSummaryScreen
+            cardGameData={data.cardGameData}
+            onNext={() => setCurrentStep('focusControl')}
           />
         );
       
@@ -127,13 +137,13 @@ const Index = () => {
         return (
           <ModuleSelectionScreen
             data={data}
-            onNext={() => setCurrentStep('completion')}
+            onNext={() => setCurrentStep('dashboard')}
             onBack={() => setCurrentStep('teamHealth')}
           />
         );
       
-      case 'completion':
-        return <CompletionScreen data={data} onRestart={handleRestart} />;
+      case 'dashboard':
+        return <ManagementCompassDashboard data={data} onRestart={handleRestart} />;
       
       default:
         return <WelcomeScreen onStart={() => setCurrentStep('focusControl')} />;
