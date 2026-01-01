@@ -9,7 +9,7 @@ import DecisionsPriceStep from '@/components/questionnaire/DecisionsPriceStep';
 import InterfacesMapStep from '@/components/questionnaire/InterfacesMapStep';
 import CoachingStep from '@/components/questionnaire/CoachingStep';
 import TeamHealthStep from '@/components/questionnaire/TeamHealthStep';
-
+import ModuleSelectionScreen from '@/components/questionnaire/ModuleSelectionScreen';
 import CompletionScreen from '@/components/questionnaire/CompletionScreen';
 import { QuestionnaireData, initialQuestionnaireData, InterfaceJourneyData, CoachingData, TeamHealthData, CardGameData } from '@/types/questionnaire';
 
@@ -22,6 +22,7 @@ type Step =
   | 'interfacesMap' 
   | 'coaching' 
   | 'teamHealth' 
+  | 'moduleSelection'
   | 'completion';
 
 const Index = () => {
@@ -117,8 +118,17 @@ const Index = () => {
           <TeamHealthStep
             teamHealthData={data.teamHealthData}
             onTeamHealthDataChange={(teamHealthData: TeamHealthData) => updateData({ teamHealthData })}
-            onNext={() => setCurrentStep('completion')}
+            onNext={() => setCurrentStep('moduleSelection')}
             onBack={() => setCurrentStep('coaching')}
+          />
+        );
+      
+      case 'moduleSelection':
+        return (
+          <ModuleSelectionScreen
+            data={data}
+            onNext={() => setCurrentStep('completion')}
+            onBack={() => setCurrentStep('teamHealth')}
           />
         );
       
